@@ -1,6 +1,32 @@
-import React from "react";
+import {useEffect, useRef} from "react";
 
 const Home = () => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error("Error accessing the camera:", error);
+      }
+    };
+
+    startCamera();
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
   return (
     <div className="flex flex-col bg-gray-100">
       {/* Navbar */}
@@ -27,12 +53,16 @@ const Home = () => {
             ></iframe>
           </div>
         </section>
-
-        {/* In-House Camera Placeholder */}
         <section id="camera" className="mb-12 text-center">
-          <h2 className="text-2xl font-semibold mb-4">In-House Camera</h2>
-          <div className="w-full h-64 bg-gray-300 rounded-lg flex items-center justify-center shadow-md">
-            <span className="text-gray-700">Camera feed will appear here</span>
+          <h2 className="text-2xl font-semibold mb-4"></h2>
+          <div className="w-full h-64 bg-gray-300 rounded-lg shadow-md flex items-center justify-center">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-full object-cover rounded-lg"
+            ></video>
           </div>
         </section>
 
