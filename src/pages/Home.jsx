@@ -67,7 +67,7 @@ const Home = () => {
         </section>
 
         {/* Feedback Section */}
-        {/* <section id="feedback" className="text-center">
+        <section id="feedback" className="text-center">
           <h2 className="text-2xl font-semibold mb-4">Feedback</h2>
           <div className="w-full h-48 bg-white rounded-lg shadow-md p-4">
             <textarea
@@ -75,7 +75,7 @@ const Home = () => {
               placeholder="Enter your feedback here..."
             ></textarea>
           </div>
-        </section> */}
+        </section>
       </main>
     </div>
   );
