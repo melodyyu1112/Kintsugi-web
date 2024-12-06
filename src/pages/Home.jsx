@@ -1,8 +1,11 @@
 import {useState, useEffect, useRef} from "react";
+import {database} from "../firebase";
+import {ref, set, onValue} from "firebase/database";
 
 const Home = () => {
   const videoRef = useRef(null);
-  const [role, setRole] = useState("student"); // Default role is 'student'
+  const [role, setRole] = useState("student"); // Default
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     const startCamera = async () => {
@@ -27,6 +30,24 @@ const Home = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const feedbackRef = ref(database, "feedback");
+    onValue(feedbackRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setFeedback(data);
+      }
+    });
+  }, []);
+
+  const handleFeedbackChange = (e) => {
+    const newFeedback = e.target.value;
+    setFeedback(newFeedback);
+
+    const feedbackRef = ref(database, "feedback");
+    set(feedbackRef, newFeedback);
+  };
 
   return (
     <div style={{fontFamily: "Arial, sans-serif", backgroundColor: "#f4f4f4"}}>
@@ -62,8 +83,6 @@ const Home = () => {
           Sign Out
         </button>
       </nav>
-
-      {/* Role Selection */}
       <section
         style={{
           textAlign: "center",
@@ -194,11 +213,18 @@ const Home = () => {
                 borderRadius: "16px",
                 border: "1px solid #ddd",
                 padding: "1rem",
+                fontSize: "1.2rem",
+                color: "#333",
+                overflow: "auto",
               }}
-            ></div>
+            >
+              {feedback || ":)"}
+            </div>
           ) : (
             <textarea
-              placeholder="Enter your feedback here..."
+              placeholder="Instructor... enter your feedback here..."
+              value={feedback}
+              onChange={handleFeedbackChange}
               style={{
                 width: "100%",
                 height: "150px",
