@@ -1,11 +1,13 @@
 import {useState, useEffect, useRef} from "react";
 import {database} from "../firebase";
 import {ref, set, onValue} from "firebase/database";
+import Confetti from "react-confetti";
 
 const Home = () => {
   const videoRef = useRef(null);
   const [role, setRole] = useState("student"); // Default
   const [feedback, setFeedback] = useState("");
+  const [celebration, setCelebration] = useState(false);
 
   useEffect(() => {
     const startCamera = async () => {
@@ -37,9 +39,34 @@ const Home = () => {
       const data = snapshot.val();
       if (data) {
         setFeedback(data);
+        if (data.toLowerCase().includes("good job")) {
+          setCelebration(true);
+          setTimeout(() => setCelebration(false), 2000);
+        }
       }
     });
   }, []);
+
+  const speak = (message) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = "en-US";
+      utterance.pitch = 1.5;
+      (utterance.rate = 1), 5;
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error("Text-to-Speech not supported in this browser.");
+    }
+  };
+
+  useEffect(() => {
+    if (feedback.toLowerCase().includes("good job")) {
+      speak("Good job!");
+    }
+    if (feedback.toLowerCase().includes("focus")) {
+      speak("Focus!");
+    }
+  }, [feedback]);
 
   const handleFeedbackChange = (e) => {
     const newFeedback = e.target.value;
@@ -66,6 +93,7 @@ const Home = () => {
         <h1 style={{color: "#87CEEB", fontSize: "1.5rem", fontWeight: "bold"}}>
           Kintsugi Pilates
         </h1>
+        {celebration && <Confetti />}
         <button
           style={{
             backgroundColor: "#87CEEB",
@@ -126,7 +154,6 @@ const Home = () => {
             justifyContent: "center",
             alignItems: "flex-start",
             gap: "2rem",
-            // marginBottom: "2rem",
           }}
         >
           {/* Pilates Tutorial */}
@@ -207,7 +234,7 @@ const Home = () => {
           {role === "student" ? (
             <div
               style={{
-                width: "100%",
+                width: "97%",
                 height: "150px",
                 backgroundColor: "#ffffff",
                 borderRadius: "16px",
@@ -226,7 +253,7 @@ const Home = () => {
               value={feedback}
               onChange={handleFeedbackChange}
               style={{
-                width: "100%",
+                width: "970%",
                 height: "150px",
                 padding: "0.5rem",
                 borderRadius: "8px",
