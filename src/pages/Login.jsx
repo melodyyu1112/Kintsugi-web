@@ -12,12 +12,33 @@ const Login = () => {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
         backgroundColor: "#f3f4f6",
+        textAlign: "center",
       }}
     >
+      <div>
+        {"KINTSUGI".split("").map((char, index) => (
+          <span
+            key={index}
+            style={{
+              fontSize: "5rem",
+              fontWeight: "bold",
+              color: "#d8cef7",
+              animation: `bounce 2s`,
+              animationDelay: `${index * 0.5}s`,
+              display: "inline-block",
+              marginRight: "0.3rem",
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
+
       <div
         style={{
           backgroundColor: "white",
@@ -27,6 +48,7 @@ const Login = () => {
           border: "1px solid #e5e7eb",
           width: "100%",
           maxWidth: "400px",
+          textAlign: "center",
         }}
       >
         <h1
@@ -94,6 +116,21 @@ const Login = () => {
           </button>
         </form>
       </div>
+      <style>
+        {`
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(-15px);
+          }
+          60% {
+            transform: translateY(-7px);
+          }
+        }
+        `}
+      </style>
     </div>
   );
 };
